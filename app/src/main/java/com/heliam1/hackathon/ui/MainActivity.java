@@ -1,5 +1,6 @@
 package com.heliam1.hackathon.ui;
 
+import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -9,21 +10,26 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 
 import com.heliam1.hackathon.R;
+import com.heliam1.hackathon.models.Group;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+
+public class MainActivity extends AppCompatActivity implements MainView {
 
     private FloatingActionButton mFabAddGroup;
-    private RecyclerView mGroupsView;
+
+    @BindView(R.id.groups_list_view) ListView mGroupsListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        mGroupsView = (RecyclerView) findViewById(R.id.groups_recycler_view);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.add_group);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -55,5 +61,17 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void displayGroups(List<Group> groups, List<Double> distancesAway) {
+        GroupsListAdapter groupsListAdapter = new GroupsListAdapter(this, groups, distancesAway);
+
+        mGroupsListView.setAdapter(groupsListAdapter);
+    }
+
+    @Override
+    public void displayNoGroups() {
+
     }
 }

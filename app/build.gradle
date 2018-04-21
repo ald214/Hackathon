@@ -36,6 +36,15 @@ dependencies {
 
     // firebase
     implementation 'com.google.firebase:firebase-core:15.0.0'
+    implementation 'com.firebase:firebase-client-android:2.5.0'
+    implementation 'com.google.firebase:firebase-messaging:15.0.0'
+    implementation 'com.google.firebase:firebase-core:15.0.0'
+    implementation 'com.google.firebase:firebase-database:15.0.0'
+
+    // Butterknife
+    implementation 'com.jakewharton:butterknife:8.8.1'
+    implementation 'com.jakewharton:butterknife-compiler:8.8.1'
+    implementation 'com.jakewharton:butterknife-annotations:8.8.1'
 
     // Dagger base
     implementation 'com.google.dagger:dagger:2.10'
@@ -52,6 +61,7 @@ dependencies {
 
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+
 }
 
 apply plugin: 'com.google.gms.google-services'
