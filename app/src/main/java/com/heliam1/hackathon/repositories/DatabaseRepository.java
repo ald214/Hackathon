@@ -21,6 +21,8 @@ import com.heliam1.hackathon.data.HackathonContract.GroupEntry;
 import com.heliam1.hackathon.data.HackathonContract.UserEntry;
 
 public class DatabaseRepository implements GroupsRepository, UserRepository {
+    public static final String LOG_TAG = DatabaseRepository.class.getSimpleName();
+
     private final ContentResolver contentResolver;
 
     public DatabaseRepository(Context context) {
@@ -33,6 +35,7 @@ public class DatabaseRepository implements GroupsRepository, UserRepository {
             try {
                 return queryGroups();
             } catch (Exception e) {
+                Log.v(LOG_TAG, "error querying for groups");
                 throw new RuntimeException("Something wrong with db");
             }
         });
@@ -49,28 +52,6 @@ public class DatabaseRepository implements GroupsRepository, UserRepository {
         });
     }
 
-    @Override
-    public Single<Long> saveGroup(Group group) {
-        return Single.fromCallable(() -> {
-            try {
-                return upsertGroup(group);
-            } catch (Exception e) {
-                throw new RuntimeException("Something wrong with db");
-            }
-        });
-    }
-
-    @Override
-    public Single<Long> saveUser(User user) {
-        return Single.fromCallable(() -> {
-            try {
-                return upsertUser(user);
-            } catch (Exception e) {
-                throw new RuntimeException("Something wrong with db");
-            }
-        });
-    }
-
     private List<Group> queryGroups() {
         String[] projection = {
                 GroupEntry._ID,
@@ -80,10 +61,14 @@ public class DatabaseRepository implements GroupsRepository, UserRepository {
                 GroupEntry.COLUMN_GROUP_LOCATION,
                 GroupEntry.COLUMN_GROUP_RATING};
 
+        Log.v(LOG_TAG, "projection reached");
+
         Cursor cursor = contentResolver.query(GroupEntry.CONTENT_URI,
                 projection, null, null, null);
 
         List<Group> groups = new ArrayList<Group>();
+
+        Log.v(LOG_TAG, "just about to begin converting cursor to group list");
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -94,6 +79,9 @@ public class DatabaseRepository implements GroupsRepository, UserRepository {
                     cursor.getInt(cursor.getColumnIndex(GroupEntry.COLUMN_GROUP_SUBJECT_CODE)),
                     cursor.getInt(cursor.getColumnIndex(GroupEntry.COLUMN_GROUP_USER_COUNT)),
                     cursor.getInt(cursor.getColumnIndex(GroupEntry.COLUMN_GROUP_RATING))));
+
+            Log.v(LOG_TAG, "group added to list");
+
             cursor.moveToNext();
         }
         cursor.close();
@@ -124,6 +112,28 @@ public class DatabaseRepository implements GroupsRepository, UserRepository {
         cursor.close();
 
         return users;
+    }
+
+    @Override
+    public Single<Long> saveGroup(Group group) {
+        return Single.fromCallable(() -> {
+            try {
+                return upsertGroup(group);
+            } catch (Exception e) {
+                throw new RuntimeException("Something wrong with db");
+            }
+        });
+    }
+
+    @Override
+    public Single<Long> saveUser(User user) {
+        return Single.fromCallable(() -> {
+            try {
+                return upsertUser(user);
+            } catch (Exception e) {
+                throw new RuntimeException("Something wrong with db");
+            }
+        });
     }
 
     private Long upsertGroup(Group group) {

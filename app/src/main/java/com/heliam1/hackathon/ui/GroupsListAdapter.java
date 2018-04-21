@@ -14,18 +14,22 @@ import com.heliam1.hackathon.models.Group;
 
 import java.util.List;
 
-import butterknife.BindView;
-
 public class GroupsListAdapter extends BaseAdapter {
     private Context mContext;
     private List<Group> mGroups;
     private List<Double> mDistances;
 
-    @BindView(R.id.distance_away) TextView distanceAwayTextView;
+    private TextView distanceAwayTextView;
+    private TextView subjectCodeTextView;
+    private TextView subjectNameTextView;
+    private TextView userCountTextView;
+    private TextView ratingTextView;
+
+    /* @BindView(R.id.distance_away) TextView distanceAwayTextView;
     @BindView(R.id.subject_code) TextView subjectCodeTextView;
     @BindView(R.id.subject_name) TextView subjectNameTextView;
     @BindView(R.id.user_count) TextView userCountTextView;
-    @BindView(R.id.rating) TextView ratingTextView;
+    @BindView(R.id.rating) TextView ratingTextView; */
 
     public GroupsListAdapter(Context context, List<Group> groups, List<Double> distances) {
         // super(context, 0, workouts);
@@ -43,11 +47,17 @@ public class GroupsListAdapter extends BaseAdapter {
 
         Group group = getItem(position);
 
-        distanceAwayTextView.setText(Double.toString(getDistance(position)));
-        subjectCodeTextView.setText(group.getSubjectCode());
+        distanceAwayTextView = (TextView) groupView.findViewById(R.id.distance_away);
+        subjectCodeTextView = (TextView) groupView.findViewById(R.id.subject_code);
+        subjectNameTextView = (TextView) groupView.findViewById(R.id.subject_name);
+        userCountTextView = (TextView) groupView.findViewById(R.id.user_count);
+        ratingTextView = (TextView) groupView.findViewById(R.id.rating);
+
+        // distanceAwayTextView.setText(Double.toString(getDistance(position)));
+        subjectCodeTextView.setText(Integer.toString(group.getSubjectCode()));
         subjectNameTextView.setText(group.getName());
-        userCountTextView.setText(group.getUserCount());
-        ratingTextView.setText(group.getRating());
+        userCountTextView.setText(Integer.toString(group.getUserCount()));
+        ratingTextView.setText(Integer.toString(group.getRating()));
 
         return groupView;
     }

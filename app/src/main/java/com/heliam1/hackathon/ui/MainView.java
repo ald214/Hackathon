@@ -8,4 +8,10 @@ public interface MainView {
     public void displayGroups(List<Group> groups, List<Double> distancesAway);
 
     public void displayNoGroups();
+
+    public void displaySuccessSavingGroup();
+
+    public void displayErrorSavingGroup();
+
+    public void displayToast(String message);
 }

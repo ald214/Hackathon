@@ -36,7 +36,7 @@ public class HackathonDbHelper extends SQLiteOpenHelper {
                 + GroupEntry.COLUMN_GROUP_NAME + " TEXT NOT NULL, "
                 + GroupEntry.COLUMN_GROUP_SUBJECT_CODE + " INTEGER NOT NULL, "
                 + GroupEntry.COLUMN_GROUP_USER_COUNT + " INTEGER NOT NULL, "
-                + GroupEntry.COLUMN_GROUP_LOCATION + "TEXT NOT NULL, "
+                + GroupEntry.COLUMN_GROUP_LOCATION + " TEXT NOT NULL, "
                 + GroupEntry.COLUMN_GROUP_RATING + " INTEGER NOT NULL DEFAULT 0);";
 
         String SQL_CREATE_USER_TABLE = "CREATE TABLE " + UserEntry.TABLE_NAME + " ("
@@ -84,9 +84,10 @@ public class HackathonDbHelper extends SQLiteOpenHelper {
     }
 
     private void insertDummyData(SQLiteDatabase db) {
+        Log.v(LOG_TAG, "Inserting dummy data");
         ContentValues values = new ContentValues();
 
-        values.put(GroupEntry._ID, "1");
+        values.put(GroupEntry._ID, 1);
         values.put(GroupEntry.COLUMN_GROUP_SUBJECT_CODE, 48650);
         values.put(GroupEntry.COLUMN_GROUP_NAME, "WiseTech Hackathon");
         values.put(GroupEntry.COLUMN_GROUP_USER_COUNT, 3);
