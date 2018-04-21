@@ -61,7 +61,7 @@ public class HackathonContract {
 
         // Columns
         public final static String _ID_STUDENT = BaseColumns._ID;                       // INTEGER
-        public final static String COLUMN_USER_PSUEDONAME = "pseduoname";
+        public final static String COLUMN_USER_PSEUDONAME = "pseudoname";
         public final static String COLUMN_USER_LOCATION = "location";
     }
 }
