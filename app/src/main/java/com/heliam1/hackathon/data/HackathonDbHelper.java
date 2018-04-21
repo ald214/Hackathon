@@ -126,7 +126,7 @@ public class HackathonDbHelper extends SQLiteOpenHelper {
         values.put(GroupMessageEntry.COLUMN_TIME_STAMP, "14:55");
         values.put(GroupMessageEntry.COLUMN_MESSAGE_TEXT, "my first message");
 
-        didItWork = db.insertOrThrow(UserEntry.TABLE_NAME, null, values);
+        didItWork = db.insertOrThrow(GroupMessageEntry.TABLE_NAME, null, values);
         Log.v(LOG_TAG, Long.toString(didItWork));
     }
 }

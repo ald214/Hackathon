@@ -30,16 +30,16 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
     @Inject
     GroupMessageRepository mGroupMessagesRepository;
 
-    @Inject
-    UserRepository mUserRepository;
+    // @Inject
+    // UserRepository mUserRepository;
 
     private ChatPresenter mChatPresenter;
 
     private FloatingActionButton mFabSendMessage;
     private Toast mToast;
 
-    ListView mChatsListView;
-    EditText mSendMessageEditText;
+    private ListView mChatsListView;
+    private EditText mSendMessageEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,15 +49,18 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
 
         ((HackathonApplication) getApplication()).getAppComponent().inject(this);
 
-        mChatsListView = (ListView) findViewById(R.id.groups_list_view);
+        mChatsListView = (ListView) findViewById(R.id.chat_list_view);
         mSendMessageEditText = (EditText) findViewById(R.id.chat_send_message_edit_text) ;
         mFabSendMessage = (FloatingActionButton) findViewById(R.id.fab_send_message);
 
         mFabSendMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                displayToast("Fab clicked");
+                
+                /*
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                        .setAction("Action", null).show(); */
             }
         });
     }
