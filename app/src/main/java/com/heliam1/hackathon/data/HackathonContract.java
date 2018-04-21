@@ -82,7 +82,7 @@ public class HackathonContract {
 
         // Columns
         public final static String _ID = BaseColumns._ID;                       // INTEGER
-        public final static String COLUMN_GROUP_ID = "group";
+        public final static String COLUMN_GROUP_ID = "groupId";
         public final static String COLUMN_USER_ID = "fromUserId";
         public final static String COLUMN_USER_NAME = "fromUserName";
         public final static String COLUMN_TIME_STAMP = "zonedDateTime";
