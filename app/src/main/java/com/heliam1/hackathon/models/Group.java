@@ -3,7 +3,7 @@ package com.heliam1.hackathon.models;
 import android.location.Location;
 
 public class Group {
-    private long id;
+    private Long id;
     private Location location;
     private String name;
     private int subjectCode;
@@ -17,6 +17,10 @@ public class Group {
         this.subjectCode = subjectCode;
         this.userCount = userCount;
         this.rating = rating;
+    }
+
+    public boolean hasId() {
+        return (this.id != null);
     }
 
     public long getId() {
