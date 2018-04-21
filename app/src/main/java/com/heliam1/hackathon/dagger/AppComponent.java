@@ -7,6 +7,7 @@ import com.heliam1.hackathon.HackathonApplication;
 import com.heliam1.hackathon.presenters.MainPresenter;
 import com.heliam1.hackathon.repositories.GroupsRepository;
 import com.heliam1.hackathon.repositories.UserRepository;
+import com.heliam1.hackathon.ui.ChatActivity;
 import com.heliam1.hackathon.ui.MainActivity;
 
 import javax.inject.Singleton;
@@ -18,6 +19,8 @@ public interface AppComponent {
     void inject(HackathonApplication application);
 
     void inject(MainActivity mainActivity);
+
+    void inject(ChatActivity chatActivity);
 
     void inject(MainPresenter mainPresenter);
 
