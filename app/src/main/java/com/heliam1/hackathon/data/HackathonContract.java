@@ -16,9 +16,10 @@ public class HackathonContract {
 
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
-    // Paths to each database
+    // Paths to each table
     public static final String PATH_GROUPS = "groups";
     public static final String PATH_USERS = "users";
+    public static final String PATH_GROUPMESSAGES = "groupmessages";
 
     // Inner class for group table
     public static final class GroupEntry implements BaseColumns {
@@ -63,5 +64,28 @@ public class HackathonContract {
         public final static String _ID_STUDENT = BaseColumns._ID;                       // INTEGER
         public final static String COLUMN_USER_PSEUDONAME = "pseudoname";
         public final static String COLUMN_USER_LOCATION = "location";
+    }
+
+    public static final class GroupMessageEntry implements BaseColumns {
+        // Content uri to access exercise_set data via the provider
+        public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_GROUPMESSAGES);
+
+        // MIME type of the {@link #CONTENT_URI} for a list of users.
+        public static final String CONTENT_LIST_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_GROUPMESSAGES;
+
+        // MIME type of the {@link #CONTENT_URI} for a single user.
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_GROUPMESSAGES;
+
+        public final static String TABLE_NAME = "groupmessages";
+
+        // Columns
+        public final static String _ID = BaseColumns._ID;                       // INTEGER
+        public final static String COLUMN_GROUP_ID = "group";
+        public final static String COLUMN_USER_ID = "fromUserId";
+        public final static String COLUMN_USER_NAME = "fromUserName";
+        public final static String COLUMN_TIME_STAMP = "zonedDateTime";
+        public final static String COLUMN_MESSAGE_TEXT = "messageText";
     }
 }
