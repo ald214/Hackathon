@@ -1,5 +1,6 @@
 package com.heliam1.hackathon.data;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -83,6 +84,22 @@ public class HackathonDbHelper extends SQLiteOpenHelper {
     }
 
     private void insertDummyData(SQLiteDatabase db) {
-        
+        ContentValues values = new ContentValues();
+
+        values.put(GroupEntry._ID, "1");
+        values.put(GroupEntry.COLUMN_GROUP_SUBJECT_CODE, 48650);
+        values.put(GroupEntry.COLUMN_GROUP_NAME, "WiseTech Hackathon");
+        values.put(GroupEntry.COLUMN_GROUP_USER_COUNT, 3);
+        values.put(GroupEntry.COLUMN_GROUP_LOCATION, "Lat/Lng");
+        values.put(GroupEntry.COLUMN_GROUP_RATING, 9001);
+
+        long didItWork = db.insertOrThrow(GroupEntry.TABLE_NAME, null, values);
+        Log.v(LOG_TAG, Long.toString(didItWork));
+
+        values.clear();
+
+        values.put(UserEntry._ID_STUDENT, 99126207);
+        values.put(UserEntry.COLUMN_USER_PSEUDONAME, "Challenger");
+        values.put(UserEntry.COLUMN_USER_LOCATION, "Lat/Lng");
     }
 }
