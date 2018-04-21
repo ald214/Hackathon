@@ -11,7 +11,7 @@ import android.util.Log;
 
 import com.heliam1.hackathon.data.HackathonContract.GroupEntry;
 import com.heliam1.hackathon.data.HackathonContract.UserEntry;
-import com.heliam1.hackathon.models.Group;
+import com.heliam1.hackathon.data.HackathonContract.GroupMessageEntry;
 
 public class HackathonProvider extends ContentProvider {
     public static final String LOG_TAG = HackathonProvider.class.getSimpleName();
@@ -20,6 +20,8 @@ public class HackathonProvider extends ContentProvider {
     private static final int GROUP_ID = 101;      // URI matcher code for the content URI for a single task in the workouts table
     private static final int USERS = 200;   // URI matcher code for the content URI for the exercisesets table
     private static final int USER_ID = 201; // URI matcher code for the content URI for a single step in the exercise sets table
+    private static final int GROUPMESSAGES = 300;
+    private static final int GROUPMESSAGE_ID = 301;
 
     /**
      * UriMatcher object to match a content URI to a corresponding code. The input passed into the
@@ -42,6 +44,13 @@ public class HackathonProvider extends ContentProvider {
         sUriMatcher.addURI(HackathonContract.CONTENT_AUTHORITY,
                 HackathonContract.PATH_USERS + "/#",
                 USER_ID);
+
+        sUriMatcher.addURI(HackathonContract.CONTENT_AUTHORITY,
+                HackathonContract.PATH_GROUPMESSAGES, GROUPMESSAGES);
+
+        sUriMatcher.addURI(HackathonContract.CONTENT_AUTHORITY,
+                HackathonContract.PATH_GROUPMESSAGES + "/#",
+                GROUPMESSAGE_ID);
     }
 
     private HackathonDbHelper mDbHelper;
@@ -88,6 +97,18 @@ public class HackathonProvider extends ContentProvider {
                         null, null, sortOrder);
                 break;
 
+            case GROUPMESSAGES:
+                cursor = database.query(GroupMessageEntry.TABLE_NAME, projection, selection, selectionArgs,
+                        null, null, sortOrder);
+                break;
+
+            case GROUPMESSAGE_ID:
+                selection = GroupMessageEntry._ID + "=?";
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
+                cursor = database.query(GroupMessageEntry.TABLE_NAME, projection, selection, selectionArgs,
+                        null, null, sortOrder);
+                break;
+
             default:
                 throw new IllegalArgumentException("Cannot query unknown URI " + uri);
         }
@@ -109,6 +130,8 @@ public class HackathonProvider extends ContentProvider {
                 return insertGroup(uri, contentValues);
             case USERS:
                 return insertUser(uri, contentValues);
+            case GROUPMESSAGES:
+                return insertGroupMessage(uri, contentValues);
             default:
                 throw new IllegalArgumentException("Insertion is not supported for " + uri);
         }
@@ -160,6 +183,29 @@ public class HackathonProvider extends ContentProvider {
         return ContentUris.withAppendedId(uri, id);
     }
 
+    private Uri insertGroupMessage(Uri uri, ContentValues values) {
+        values = sanitiseGroupMessage(values);
+        // If values were not sanitary
+        if (values == null) {
+            return null;
+        }
+
+        SQLiteDatabase database = mDbHelper.getWritableDatabase();
+
+        long id = database.insert(GroupMessageEntry.TABLE_NAME, null, values);
+        // If the ID is -1, then the insertion failed. Log an error and return null.
+        if (id == -1) {
+            Log.e(LOG_TAG, "Failed to insert row for " + uri);
+            return null;
+        }
+
+        // Notify all listeners that the data has changed for the task content URI
+        getContext().getContentResolver().notifyChange(uri, null);
+
+        // Return the new URI with the ID (of the newly inserted row) appended at the end
+        return ContentUris.withAppendedId(uri, id);
+    }
+
     @Override
     public int update(Uri uri, ContentValues contentValues, String selection,
                       String[] selectionArgs) {
@@ -180,6 +226,12 @@ public class HackathonProvider extends ContentProvider {
                 selection = UserEntry._ID + "=?";
                 selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
                 return updateUser(uri, contentValues, selection, selectionArgs);
+            case GROUPMESSAGES:
+                return updateGroupMessage(uri, contentValues, selection, selectionArgs);
+            case GROUPMESSAGE_ID:
+                selection = UserEntry._ID + "=?";
+                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
+                return updateGroupMessage(uri, contentValues, selection, selectionArgs);
             default:
                 throw new IllegalArgumentException("Update is not supported for " + uri);
         }
@@ -241,6 +293,34 @@ public class HackathonProvider extends ContentProvider {
         return rowsUpdated;
     }
 
+    private int updateGroupMessage(Uri uri, ContentValues values, String selection,
+                           String[] selectionArgs) {
+
+        // If there are no values to update, then don't try to update the database
+        if (values.size() == 0) {
+            return 0;
+        }
+
+        values = sanitiseGroupMessage(values);
+        // if values bad sanitised update failed
+        if (values == null) {
+            return 0;
+        }
+
+        SQLiteDatabase database = mDbHelper.getWritableDatabase();
+
+        int rowsUpdated = database.update(GroupMessageEntry.TABLE_NAME, values, selection, selectionArgs);
+
+        // If 1 or more rows were updated, then notify all listeners that the data at the
+        // given URI has changed
+        if (rowsUpdated != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        // Return the number of rows updated
+        return rowsUpdated;
+    }
+
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         SQLiteDatabase database = mDbHelper.getWritableDatabase();
@@ -268,6 +348,15 @@ public class HackathonProvider extends ContentProvider {
                 selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
                 rowsDeleted = database.delete(UserEntry.TABLE_NAME, selection, selectionArgs);
                 break;
+            case GROUPMESSAGES:
+                rowsDeleted = database.delete(GroupMessageEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            case GROUPMESSAGE_ID:
+                // Delete a single row given by the ID in the URI
+                selection = GroupMessageEntry._ID + "=?";
+                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
+                rowsDeleted = database.delete(GroupMessageEntry.TABLE_NAME, selection, selectionArgs);
+                break;
             default:
                 throw new IllegalArgumentException("Deletion is not supported for " + uri);
         }
@@ -293,6 +382,10 @@ public class HackathonProvider extends ContentProvider {
                 return UserEntry.CONTENT_LIST_TYPE;
             case USER_ID:
                 return UserEntry.CONTENT_ITEM_TYPE;
+            case GROUPMESSAGES:
+                return GroupMessageEntry.CONTENT_LIST_TYPE;
+            case GROUPMESSAGE_ID:
+                return GroupMessageEntry.CONTENT_ITEM_TYPE;
             default:
                 throw new IllegalStateException("Unknown URI " + uri + " with match " + match);
         }
@@ -303,6 +396,10 @@ public class HackathonProvider extends ContentProvider {
     }
 
     private ContentValues sanitiseUser(ContentValues values) {
+        return values;
+    }
+
+    private ContentValues sanitiseGroupMessage(ContentValues values) {
         return values;
     }
 }

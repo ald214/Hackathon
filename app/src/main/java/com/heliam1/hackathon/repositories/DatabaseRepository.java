@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.heliam1.hackathon.models.Group;
+import com.heliam1.hackathon.models.GroupMessage;
 import com.heliam1.hackathon.models.User;
 
 import java.util.ArrayList;
@@ -19,8 +20,9 @@ import io.reactivex.Single;
 
 import com.heliam1.hackathon.data.HackathonContract.GroupEntry;
 import com.heliam1.hackathon.data.HackathonContract.UserEntry;
+import com.heliam1.hackathon.data.HackathonContract.GroupMessageEntry;
 
-public class DatabaseRepository implements GroupsRepository, UserRepository {
+public class DatabaseRepository implements GroupsRepository, UserRepository, GroupMessageRepository {
     public static final String LOG_TAG = DatabaseRepository.class.getSimpleName();
 
     private final ContentResolver contentResolver;
@@ -46,6 +48,17 @@ public class DatabaseRepository implements GroupsRepository, UserRepository {
         return Single.fromCallable(() -> {
             try {
                 return queryUser();
+            } catch (Exception e) {
+                throw new RuntimeException("Something wrong with db");
+            }
+        });
+    }
+
+    @Override
+    public Single<List<GroupMessage>> getGroupMessages() {
+        return Single.fromCallable(() -> {
+            try {
+                return queryGroupMessage();
             } catch (Exception e) {
                 throw new RuntimeException("Something wrong with db");
             }
@@ -114,6 +127,40 @@ public class DatabaseRepository implements GroupsRepository, UserRepository {
         return users;
     }
 
+    private List<GroupMessage> queryGroupMessage() {
+
+        String[] projection = {
+                GroupMessageEntry._ID,
+                GroupMessageEntry.COLUMN_GROUP_ID,
+                GroupMessageEntry.COLUMN_USER_ID,
+                GroupMessageEntry.COLUMN_USER_NAME,
+                GroupMessageEntry.COLUMN_TIME_STAMP,
+                GroupMessageEntry.COLUMN_MESSAGE_TEXT};
+
+
+        Cursor cursor = contentResolver.query(GroupMessageEntry.CONTENT_URI,
+                projection, null, null, null);
+
+        List<GroupMessage> groupMessages = new ArrayList<GroupMessage>();
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            groupMessages.add(new GroupMessage(
+                    cursor.getLong(cursor.getColumnIndex(GroupMessageEntry._ID)),
+                    cursor.getLong(cursor.getColumnIndex(GroupMessageEntry.COLUMN_GROUP_ID)),
+                    cursor.getLong(cursor.getColumnIndex(GroupMessageEntry.COLUMN_USER_ID)),
+                    cursor.getString(cursor.getColumnIndex(GroupMessageEntry.COLUMN_USER_NAME)),
+                    cursor.getString(cursor.getColumnIndex(GroupMessageEntry.COLUMN_TIME_STAMP)),
+                    cursor.getString(cursor.getColumnIndex(GroupMessageEntry.COLUMN_MESSAGE_TEXT))
+            ));
+
+            cursor.moveToNext();
+        }
+        cursor.close();
+
+        return groupMessages;
+    }
+
     @Override
     public Single<Long> saveGroup(Group group) {
         return Single.fromCallable(() -> {
@@ -130,6 +177,17 @@ public class DatabaseRepository implements GroupsRepository, UserRepository {
         return Single.fromCallable(() -> {
             try {
                 return upsertUser(user);
+            } catch (Exception e) {
+                throw new RuntimeException("Something wrong with db");
+            }
+        });
+    }
+
+    @Override
+    public Single<Long> saveGroupMessage(GroupMessage groupMessage) {
+        return Single.fromCallable(() -> {
+            try {
+                return upsertGroupMessage(groupMessage);
             } catch (Exception e) {
                 throw new RuntimeException("Something wrong with db");
             }
@@ -181,6 +239,31 @@ public class DatabaseRepository implements GroupsRepository, UserRepository {
         return parseUriToId(uri);
     }
 
+    private Long upsertGroupMessage(GroupMessage groupMessage) {
+        ContentValues values = new ContentValues();
+
+        values.put(GroupMessageEntry.COLUMN_GROUP_ID, groupMessage.getGroupId());
+        values.put(GroupMessageEntry.COLUMN_USER_ID, groupMessage.getUserId());
+        values.put(GroupMessageEntry.COLUMN_USER_NAME, groupMessage.getUserName());
+        values.put(GroupMessageEntry.COLUMN_TIME_STAMP, groupMessage.getZonedDateTime());
+        values.put(GroupMessageEntry.COLUMN_MESSAGE_TEXT, groupMessage.getMessageText());
+
+        // uri or Long savedWorkoutId; deffs want long but convert from uri?
+        Uri uri;
+
+        if (groupMessage.hasId()) {
+            contentResolver.update(
+                    ContentUris.withAppendedId(GroupMessageEntry.CONTENT_URI, groupMessage.getId()),
+                    values, null, null);
+
+            // TODO:
+            uri = ContentUris.withAppendedId(GroupMessageEntry.CONTENT_URI, groupMessage.getId());
+        } else {
+            uri = contentResolver.insert(GroupMessageEntry.CONTENT_URI, values);
+        }
+        return parseUriToId(uri);
+    }
+
     @Override
     public Single<Long> deleteGroup(Group group) {
         return Single.fromCallable(() -> {
@@ -211,7 +294,22 @@ public class DatabaseRepository implements GroupsRepository, UserRepository {
         });
     }
 
-    Long parseUriToId(Uri uri) {
+    @Override
+    public Single<Long> deleteGroupMessage(GroupMessage groupMessage) {
+        return Single.fromCallable(() -> {
+            try {
+                Long id  = groupMessage.getId();
+                contentResolver.delete(
+                        ContentUris.withAppendedId(GroupMessageEntry.CONTENT_URI, id),
+                        null, null);
+                return id;
+            } catch (Exception e) {
+                throw new RuntimeException("Something wrong with db");
+            }
+        });
+    }
+
+    private Long parseUriToId(Uri uri) {
         String idString = uri.toString();
         idString = idString.replaceFirst("1","");
         String idValueString = idString.replaceAll("[^0-9]", "");

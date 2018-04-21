@@ -8,8 +8,10 @@ import android.util.Log;
 
 import com.heliam1.hackathon.data.HackathonContract.GroupEntry;
 import com.heliam1.hackathon.data.HackathonContract.UserEntry;
-import com.heliam1.hackathon.models.Group;
-import com.heliam1.hackathon.models.User;
+import com.heliam1.hackathon.data.HackathonContract.GroupMessageEntry;
+import com.heliam1.hackathon.models.GroupMessage;
+
+import okhttp3.Challenge;
 
 public class HackathonDbHelper extends SQLiteOpenHelper {
     public static final String LOG_TAG = HackathonDbHelper.class.getSimpleName();
@@ -44,9 +46,18 @@ public class HackathonDbHelper extends SQLiteOpenHelper {
                 + UserEntry.COLUMN_USER_PSEUDONAME + " TEXT NOT NULL, "
                 + UserEntry.COLUMN_USER_LOCATION + " TEXT NOT NULL);";
 
+        String SQL_CREATE_GROUPMESSAGE_TABLE = "CREATE TABLE " + GroupMessageEntry.TABLE_NAME + " ("
+                + GroupMessageEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + GroupMessageEntry.COLUMN_GROUP_ID + " INTEGER NOT NULL, "
+                + GroupMessageEntry.COLUMN_USER_ID + " INTEGER NOT NULL, "
+                + GroupMessageEntry.COLUMN_USER_NAME + " TEXT NOT NULL, "
+                + GroupMessageEntry.COLUMN_TIME_STAMP + " TEXT NOT NULL, "
+                + GroupMessageEntry.COLUMN_MESSAGE_TEXT + " TEXT NOT NULL);";
+
         // Execute the SQL statements
         db.execSQL(SQL_CREATE_GROUPS_TABLE);
         db.execSQL(SQL_CREATE_USER_TABLE);
+        db.execSQL(SQL_CREATE_GROUPMESSAGE_TABLE);
 
         insertDummyData(db);
 
@@ -102,5 +113,20 @@ public class HackathonDbHelper extends SQLiteOpenHelper {
         values.put(UserEntry._ID_STUDENT, 99126207);
         values.put(UserEntry.COLUMN_USER_PSEUDONAME, "Challenger");
         values.put(UserEntry.COLUMN_USER_LOCATION, "Lat/Lng");
+
+        didItWork = db.insertOrThrow(UserEntry.TABLE_NAME, null, values);
+        Log.v(LOG_TAG, Long.toString(didItWork));
+
+        values.clear();
+
+        values.put(GroupMessageEntry._ID, 1);
+        values.put(GroupMessageEntry.COLUMN_GROUP_ID, 1);
+        values.put(GroupMessageEntry.COLUMN_USER_ID, 99126207);
+        values.put(GroupMessageEntry.COLUMN_USER_NAME, "Challenger");
+        values.put(GroupMessageEntry.COLUMN_TIME_STAMP, "14:55");
+        values.put(GroupMessageEntry.COLUMN_MESSAGE_TEXT, "my first message");
+
+        didItWork = db.insertOrThrow(UserEntry.TABLE_NAME, null, values);
+        Log.v(LOG_TAG, Long.toString(didItWork));
     }
 }
