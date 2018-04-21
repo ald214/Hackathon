@@ -16,16 +16,14 @@ import java.util.List;
 public class GroupMessageListAdapter extends BaseAdapter {
     private Context mContext;
     private List<GroupMessage> mGroupMessages;
-    private List<User> mUsers;
 
     private TextView groupMessageUserName;
     private TextView groupMessageText;
 
-    public GroupMessageListAdapter(Context context, List<GroupMessage> groupMessages, List<User> users) {
+    public GroupMessageListAdapter(Context context, List<GroupMessage> groupMessages) {
         // super(context, 0, workouts);
         mContext = context;
         mGroupMessages = groupMessages;
-        mUsers = users;
     }
 
     public View getView(final int position, View convertView, ViewGroup parent) {

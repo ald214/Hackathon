@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.heliam1.hackathon.HackathonApplication;
 import com.heliam1.hackathon.repositories.DatabaseRepository;
+import com.heliam1.hackathon.repositories.GroupMessageRepository;
 import com.heliam1.hackathon.repositories.GroupsRepository;
 import com.heliam1.hackathon.repositories.UserRepository;
 
@@ -35,6 +36,12 @@ public class AppModule {
     @Provides
     @Singleton
     UserRepository providesUserRepository(Context application) {
+        return new DatabaseRepository(application);
+    }
+
+    @Provides
+    @Singleton
+    GroupMessageRepository providesGroupMessagesRepository(Context application) {
         return new DatabaseRepository(application);
     }
 }

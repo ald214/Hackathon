@@ -14,6 +14,7 @@ import com.heliam1.hackathon.HackathonApplication;
 import com.heliam1.hackathon.R;
 import com.heliam1.hackathon.models.GroupMessage;
 import com.heliam1.hackathon.models.User;
+import com.heliam1.hackathon.presenters.ChatPresenter;
 import com.heliam1.hackathon.repositories.GroupMessageRepository;
 import com.heliam1.hackathon.repositories.UserRepository;
 
@@ -23,7 +24,7 @@ import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
-public class ChatActivity extends AppCompatActivity {
+public class ChatActivity extends AppCompatActivity implements ChatView {
     public static final String LOG_TAG = ChatActivity.class.getSimpleName();
 
     @Inject
@@ -65,15 +66,29 @@ public class ChatActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         Log.v(LOG_TAG, "OnCreate called");
-        mChatPresenter = newChatPresenter(this, mGroupMessagesRepository, mUserRepository,
+        mChatPresenter = new ChatPresenter(this, mGroupMessagesRepository,
                 AndroidSchedulers.mainThread());
         mChatPresenter.loadGroupMessages();
     }
 
     @Override
-    public void displayGroups(List<GroupMessage> groups, List<User> users) {
-        GroupMessageListAdapter groupMessageListAdapter = new GroupMessageListAdapter(this, groups, users);
+    public void displayGroupMessages(List<GroupMessage> groupMessages) {
+        GroupMessageListAdapter groupMessageListAdapter = new GroupMessageListAdapter(this, groupMessages);
 
         mChatsListView.setAdapter(groupMessageListAdapter);
+    }
+
+    @Override
+    public void displayNoGroupMessages() {
+
+    }
+
+    @Override
+    public void displayToast(String message) {
+        if (mToast != null) {
+            mToast.cancel();
+        }
+        mToast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
+        mToast.show();
     }
 }
