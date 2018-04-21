@@ -8,6 +8,8 @@ import com.heliam1.hackathon.ui.MainView;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import io.reactivex.Scheduler;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
@@ -16,8 +18,11 @@ import io.reactivex.schedulers.Schedulers;
 public class MainPresenter {
     // TODO: Inject these?
     private MainView mView;
+
     private GroupsRepository mGroupsRepository;
+
     private UserRepository mUserRepository;
+
     private final Scheduler mainScheduler;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
