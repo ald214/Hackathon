@@ -74,6 +74,6 @@ public class GroupsListAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int i) {
-        return 0;
+        return mGroups.get(i).getId();
     }
 }

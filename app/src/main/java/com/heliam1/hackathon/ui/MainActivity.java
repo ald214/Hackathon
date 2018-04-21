@@ -1,6 +1,9 @@
 package com.heliam1.hackathon.ui;
 
+import android.content.ContentUris;
+import android.content.Intent;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -11,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -61,6 +65,20 @@ public class MainActivity extends AppCompatActivity implements MainView {
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+            }
+        });
+
+        // Setup the item click listener
+        mGroupsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long currentGroupId) {
+
+                Intent intent = new Intent(MainActivity.this, ChatActivity.class);
+
+                // pass the group id to the chat activity
+                intent.setAction(Long.toString(currentGroupId));
+
+                startActivity(intent);
             }
         });
     }
