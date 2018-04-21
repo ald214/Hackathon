@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
@@ -13,14 +14,18 @@ import com.heliam1.hackathon.R;
 
 public class MainActivity extends AppCompatActivity {
 
+    private FloatingActionButton mFabAddGroup;
+    private RecyclerView mGroupsView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        mGroupsView = (RecyclerView) findViewById(R.id.groups_recycler_view);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.add_group);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
