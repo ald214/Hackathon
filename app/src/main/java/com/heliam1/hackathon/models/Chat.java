@@ -7,8 +7,8 @@ public class Chat {
     public Chat() {}
 
     public Chat(String groupMessageString, String groupMessageUserName) {
-        this.text = text;
-        this.name = name;
+        this.text = groupMessageString;
+        this.name = groupMessageUserName;
     }
 
     public String getText() {
