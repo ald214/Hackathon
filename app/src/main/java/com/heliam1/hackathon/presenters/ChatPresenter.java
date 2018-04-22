@@ -49,4 +49,30 @@ public class ChatPresenter {
                 })
         );
     }
+
+    public void sendGroupMessage(GroupMessage groupMessage) {
+        compositeDisposable.add(mGroupMessageRepository.saveGroupMessage(groupMessage)
+                .subscribeOn(Schedulers.io())
+                .observeOn(mainScheduler)
+                .subscribeWith(new DisposableSingleObserver<Long>() {
+                    @Override
+                    public void onSuccess(Long idOfSavedGroup) {
+                        if (idOfSavedGroup == null) {
+                            // TODO: this should be in on error only?
+                            mView.displayToast("Message not sent!");
+                        } else {
+                            mView.displaySuccessfulGroupMessage();
+                            mView.displayToast("Message sent!");
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        mView.displayToast("Message not sent!");
+                    }
+                })
+        );
+        // TODO: better solution than this surely... maybe on database upsert? ondatabasechange?
+        loadGroupMessages();
+    }
 }

@@ -10,4 +10,6 @@ public interface ChatView {
     public void displayNoGroupMessages();
 
     public void displayToast(String message);
+
+    public void displaySuccessfulGroupMessage();
 }

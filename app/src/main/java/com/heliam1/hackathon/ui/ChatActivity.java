@@ -57,7 +57,13 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
             @Override
             public void onClick(View view) {
                 displayToast("Fab clicked");
-                
+
+                GroupMessage groupMessage = new GroupMessage(null, 1, 99126207,
+                        "Challenger", "today",
+                        mSendMessageEditText.getText().toString().trim());
+
+                mChatPresenter.sendGroupMessage(groupMessage);
+
                 /*
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show(); */
@@ -84,6 +90,11 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
     @Override
     public void displayNoGroupMessages() {
 
+    }
+
+    @Override
+    public void displaySuccessfulGroupMessage() {
+        mSendMessageEditText.setText("");
     }
 
     @Override
