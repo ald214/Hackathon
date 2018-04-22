@@ -59,4 +59,8 @@ public class GroupMessageListAdapter extends BaseAdapter {
     public long getItemId(int i) {
         return 0;
     }
+
+    public void add(GroupMessage groupMessage) {
+        mGroupMessages.add(groupMessage);
+    }
 }
