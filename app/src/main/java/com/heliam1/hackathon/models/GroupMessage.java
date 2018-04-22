@@ -8,7 +8,7 @@ public class GroupMessage {
     String zonedDateTime;
     String messageText;
 
-    public GroupMessage(long id, long groupId, long userId, String userName, String zonedDateTime, String messageText) {
+    public GroupMessage(Long id, long groupId, long userId, String userName, String zonedDateTime, String messageText) {
         this.id = id;
         this.groupId = groupId;
         this.userId = userId;
