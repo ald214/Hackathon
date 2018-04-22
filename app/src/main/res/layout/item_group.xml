@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:paddingEnd="16dp"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:paddingStart="16dp">
+    android:paddingEnd="8dp"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
+    android:paddingStart="8dp">
 
     <TextView
         android:id="@+id/distance_away"
@@ -16,27 +16,34 @@
         android:layout_height="36dp"
         android:layout_gravity="center_vertical"
         android:fontFamily="sans-serif-medium"
-        android:gravity="center"
         android:textColor="@android:color/white"
         android:textSize="16sp"
-        tools:text="0.4" />
+        tools:text="0.1" />
 
     <TextView
         android:id="@+id/subject_code"
+        android:textSize="16sp"
+        android:fontFamily="sans-serif-medium"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"/>
 
     <TextView
+        android:fontFamily="sans-serif-medium"
+        android:textSize="16sp"
         android:id="@+id/subject_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <TextView
+        android:fontFamily="sans-serif-medium"
+        android:textSize="16sp"
         android:id="@+id/user_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <TextView
+        android:fontFamily="sans-serif-medium"
+        android:textSize="16sp"
         android:id="@+id/rating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

@@ -89,6 +89,7 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
 
                 // ......sendGroupMessage(groupMessage);
                 Chat chat = new Chat(mSendMessageEditText.getText().toString().trim(), "Challenger");
+                Log.v(LOG_TAG, "chat message attempted to send:" + chat.getText());
                 mMessagesDatabaseReference.push().setValue(chat);
 
                 /*
@@ -115,6 +116,7 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
             public void onCancelled(DatabaseError databaseError) {}
         };
+        Log.v(LOG_TAG, "do we reach here");
         mMessagesDatabaseReference.addChildEventListener(mChildEventListener);
     }
 

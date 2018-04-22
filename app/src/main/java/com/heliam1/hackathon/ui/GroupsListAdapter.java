@@ -54,9 +54,9 @@ public class GroupsListAdapter extends BaseAdapter {
         ratingTextView = (TextView) groupView.findViewById(R.id.rating);
 
         // distanceAwayTextView.setText(Double.toString(getDistance(position)));
-        subjectCodeTextView.setText(Integer.toString(group.getSubjectCode()));
-        subjectNameTextView.setText(group.getName());
-        userCountTextView.setText(Integer.toString(group.getUserCount()));
+        subjectCodeTextView.setText(Integer.toString(group.getSubjectCode()) + "  ");
+        subjectNameTextView.setText(group.getName() + "  ");
+        userCountTextView.setText(Integer.toString(group.getUserCount()) + "  ");
         ratingTextView.setText(Integer.toString(group.getRating()));
 
         return groupView;
